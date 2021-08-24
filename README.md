@@ -1,5 +1,23 @@
 # backend-master-golang
 
+This is a boilerplate backend written in Go that uses postgres as a datastore. 
+
+## Features 
+* database connection (postgres)
+* database migration 
+* crud code gen 
+* crud unit testing 
+
+
+## Dependencies 
+
+* Go
+* Docker
+* Taskfile 
+* golang-migrate
+* sqlc
+
+## Getting started
 
 
 ## Getting started

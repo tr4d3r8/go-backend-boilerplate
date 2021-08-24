@@ -13,7 +13,7 @@ import (
 // for test isolation each test will create its own account
 func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner: util.RandomOwner(), // rondomy generate
+		Owner: util.RandomOwner(), // randomly generate
 		Balance: util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}

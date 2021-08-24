@@ -9,13 +9,19 @@ function stop_postgres {
     echo "stopping postgres container"
     docker stop postgres-12
 }
-function stop_postgres {
+function remove_postgres {
     echo "removing postgres container"
     docker rm prostgres-12
 }
 function createdb {
     echo "creating new database"
     docker exec -it postgres-12 createdb --username=root --owner=root simple_bank
+}
+function new_migration {
+    echo "creating new migration"
+    echo "please give a reason for change underscore_seperated"
+    read reason
+    migrate create -ext sql -dir db/migration -seq $reason
 }
 function migrate_up {
     echo "migrating db up"
