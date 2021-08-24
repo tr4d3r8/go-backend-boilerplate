@@ -27,4 +27,14 @@ This is a boilerplate backend written in Go that uses postgres as a datastore.
 * run tests ``` run tests ```
 
 
+## Generate CRUD functions 
+* modify query in db/query/
+* run ``` sqlc generate ``` 
+* this will create or modify the code gen files in ../sqlc/ 
+    * EXAMPLE:
+        * Modifying ../query/account.sql
+        * Running ``` sqlc generate ```
+        * Will create/modify ../sqlc/account.sql.go
+ 
+
 

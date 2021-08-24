@@ -3,7 +3,6 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -16,8 +15,8 @@ type Account struct {
 }
 
 type Entry struct {
-	Code      int64         `json:"code"`
-	AccountID sql.NullInt64 `json:"account_id"`
+	Code      int64 `json:"code"`
+	AccountID int64 `json:"account_id"`
 	// this can be negative or positive
 	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`

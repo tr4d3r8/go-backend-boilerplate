@@ -5,6 +5,10 @@ function postgres {
     echo "starting postgres container"
     docker run --name postgres-12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
 }
+function start_postgres {
+    echo "starting postgres container"
+    docker start postgres-12
+}
 function stop_postgres {
     echo "stopping postgres container"
     docker stop postgres-12
