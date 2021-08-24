@@ -1,0 +1,51 @@
+#!/bin/bash
+PATH=./node_modules/.bin:$PATH
+
+function run_postgres {
+    echo "starting postgres container"
+    docker run --name postgres-12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
+}
+function stop_postgres {
+    echo "stopping postgres container"
+    docker stop postgres-12
+}
+function stop_postgres {
+    echo "removing postgres container"
+    docker rm prostgres-12
+}
+function createdb {
+    echo "creating new database"
+    docker exec -it postgres-12 createdb --username=root --owner=root simple_bank
+}
+function migrate_up {
+    echo "migrating db up"
+    migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" --verbose up
+}
+function migrate_down {
+    echo "migrating db down"
+    migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" --verbose down
+}
+function dropdb {
+    echo "dropping database from postgres"
+    docker exec -it postgres-12 dropdb simple_bank
+}
+function sqlc {
+    sqlc generate
+}
+function tests {
+    echo "running unit tests"
+    go test -v -cover ./...
+}
+
+function default {
+    start
+}
+
+function help {
+    echo "$0 <task> <args>"
+    echo "Tasks:"
+    compgen -A function | cat -n
+}
+
+TIMEFORMAT="Task completed in %3lR"
+time ${@:-default}
