@@ -56,6 +56,9 @@ type TransferTxResult struct {
 	ToEntry			Entry		`json:"to_entry"`  
 }
 
+var txKey = struct{}{}
+
+
 // performs money transfer between accounts
 // creates transfer record 
 func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
@@ -65,6 +68,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error 
 		
+
 		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: arg.FromAccountID,
 			ToAccountID: arg.ToAccountID,
@@ -74,6 +78,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err
 		}
 		
+
 		// moving money out of account
 		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountID,
@@ -82,6 +87,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
+
 
 		// moving money into an account
 		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
@@ -96,11 +102,14 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		// get account -> update its balance -> send it back to db 
 		// need to add locking mechanism 
 
+
+
 		// this moves money out of the account 
 		account1, err := q.GetAccountForUpdate(ctx, arg.FromAccountID)
 		if err != nil {
 			return err
 		}
+
 
 		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
 			ID: 	arg.FromAccountID,
@@ -110,11 +119,13 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err 
 		}
 
+
 		// this moves money into the account
 		account2, err := q.GetAccountForUpdate(ctx, arg.ToAccountID)
 		if err != nil {
 			return err
 		}
+
 
 		result.ToAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
 			ID: 	arg.ToAccountID,
