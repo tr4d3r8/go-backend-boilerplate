@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/tr4d3r/backend-master-golang/util"
+	"github.com/tr4d3r8/go-backend-boilerplate/util"
 )
 
 // for test isolation each test will create its own account
 func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner: util.RandomOwner(), // randomly generate
-		Balance: util.RandomMoney(),
+		Owner:    util.RandomOwner(), // randomly generate
+		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
 
@@ -31,7 +31,6 @@ func createRandomAccount(t *testing.T) Account {
 
 	return account
 }
-
 
 func TestCreateAccount(t *testing.T) {
 	createRandomAccount(t)
@@ -53,12 +52,12 @@ func TestGetAccount(t *testing.T) {
 
 func TestUpdateAccount(t *testing.T) {
 	account1 := createRandomAccount(t)
-	
+
 	arg := UpdateAccountParams{
-		ID:		account1.ID,
-		Balance:	util.RandomMoney(),
-	}	
-	
+		ID:      account1.ID,
+		Balance: util.RandomMoney(),
+	}
+
 	account2, err := testQueries.UpdateAccount(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, account2)
@@ -82,7 +81,6 @@ func TestDeleteAccount(t *testing.T) {
 	require.Empty(t, account2)
 }
 
-
 func TestListAccounts(t *testing.T) {
 	// ensure there are at least 10 records in database
 	for i := 0; i < 10; i++ {
@@ -91,7 +89,7 @@ func TestListAccounts(t *testing.T) {
 
 	// ensure 5 records returned
 	arg := ListAccountsParams{
-		Limit: 5, 
+		Limit:  5,
 		Offset: 5,
 	}
 
@@ -99,9 +97,9 @@ func TestListAccounts(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, accounts, 5)
 
-	// verify all returned accouts are not empty 
+	// verify all returned accouts are not empty
 	for _, account := range accounts {
 		require.NotEmpty(t, account)
 	}
-	
+
 }

@@ -5,12 +5,12 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
-	"gitlab.com/tr4d3r/backend-master-golang/api"
-	db "gitlab.com/tr4d3r/backend-master-golang/db/sqlc"
-	"gitlab.com/tr4d3r/backend-master-golang/util"
+	"github.com/tr4d3r8/go-backend-boilerplate/api"
+	db "github.com/tr4d3r8/go-backend-boilerplate/db/sqlc"
+	"github.com/tr4d3r8/go-backend-boilerplate/util"
 )
 
-func main(){
+func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal("cannot load configurations", err)
