@@ -5,9 +5,9 @@ import "github.com/spf13/viper"
 // config stores all configurations for the service
 // the valuses are ready by viper from a config file or environment variable
 type Config struct {
-	DBDriver 			string	`mapstructure:"DB_DRIVER`
-	DBSource 			string	`mapstructure:"DB_SOURCE"`
-	ServerAddress 		string	`mapstructure:"SERVER_ADDRESS"`
+	DBDriver 		string	`mapstructure:"DB_DRIVER"`
+	DBSource 		string	`mapstructure:"DB_SOURCE"`
+	ServerAddress 	string	`mapstructure:"SERVER_ADDRESS"`
 }
 
 // reads configuration from a file if path exists or override with env var 
@@ -23,6 +23,6 @@ func LoadConfig(path string) (config Config, err error){
 		return
 	}
 	err = viper.Unmarshal(&config)
-	
-	return config, err
+
+	return
 }
