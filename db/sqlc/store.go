@@ -98,42 +98,43 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err
 		}
 		
-		//TODO: update account balance 
-		// get account -> update its balance -> send it back to db 
-		// need to add locking mechanism 
+		// make sure we always execute transactions in a standard order 
+		if arg.FromAccountID < arg.ToAccountID {
 
-
-
-		// this moves money out of the account 
-		account1, err := q.GetAccountForUpdate(ctx, arg.FromAccountID)
-		if err != nil {
-			return err
-		}
-
-
-		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+		result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
 			ID: 	arg.FromAccountID,
-			Balance: 	account1.Balance - arg.Amount,
+			Amount: 	-arg.Amount,
 		})
 		if err != nil {
 			return err 
 		}
 
-
-		// this moves money into the account
-		account2, err := q.GetAccountForUpdate(ctx, arg.ToAccountID)
-		if err != nil {
-			return err
-		}
-
-
-		result.ToAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
 			ID: 	arg.ToAccountID,
-			Balance: 	account2.Balance + arg.Amount,
+			Amount: 	arg.Amount,
 		})
 		if err != nil {
 			return err 
 		}
+	} else {
+
+		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID: 	arg.ToAccountID,
+			Amount: 	arg.Amount,
+		})
+		if err != nil {
+			return err 
+		}
+
+		result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID: 	arg.FromAccountID,
+			Amount: 	-arg.Amount,
+		})
+		if err != nil {
+			return err 
+		}
+
+	}
 
 		return nil
 	})
