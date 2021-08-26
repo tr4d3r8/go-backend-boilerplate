@@ -5,15 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	db "gitlab.com/tr4d3r/backend-master-golang/db/sqlc"
+	db "github.com/tr4d3r8/go-backend-boilerplate/db/sqlc"
 )
-
 
 type CreateAccountRequest struct {
 	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
 }
-
 
 // create accout handler
 func (server *Server) createAccount(ctx *gin.Context) {
@@ -23,9 +21,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 	arg := db.CreateAccountParams{
-		Owner: req.Owner,
+		Owner:    req.Owner,
 		Currency: req.Currency,
-		Balance: 0,
+		Balance:  0,
 	}
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil {
@@ -36,8 +34,7 @@ func (server *Server) createAccount(ctx *gin.Context) {
 }
 
 type getAccountRequest struct {
-	ID 		int64		`uri:"id" binding:"required,min=1"` 
-
+	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
 func (server *Server) getAccount(ctx *gin.Context) {
@@ -54,17 +51,15 @@ func (server *Server) getAccount(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 	ctx.JSON(http.StatusOK, account)
 
 }
 
-
 type listAccountRequest struct {
-	PageID			int32		`form:"page_id" binding:"required,min=1"`
-	PageSize 		int32		`form:"page_size" binding:"required,min=5,max=10"` 
-
+	PageID   int32 `form:"page_id" binding:"required,min=1"`
+	PageSize int32 `form:"page_size" binding:"required,min=5,max=10"`
 }
 
 func (server *Server) listAccount(ctx *gin.Context) {
@@ -74,9 +69,9 @@ func (server *Server) listAccount(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.ListAccountsParams {
-		Limit: req.PageSize,
-		Offset: (req.PageID -1) * req.PageSize,
+	arg := db.ListAccountsParams{
+		Limit:  req.PageSize,
+		Offset: (req.PageID - 1) * req.PageSize,
 	}
 
 	accounts, err := server.store.ListAccounts(ctx, arg)
@@ -86,7 +81,7 @@ func (server *Server) listAccount(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return 
+		return
 	}
 	ctx.JSON(http.StatusOK, accounts)
 

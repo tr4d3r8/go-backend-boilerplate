@@ -6,19 +6,18 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"gitlab.com/tr4d3r/backend-master-golang/util"
+	"github.com/tr4d3r8/go-backend-boilerplate/util"
 )
 
 // for test isolation we will create a random entry for each test
 func createRandomEntry(t *testing.T, account Account) Entry {
-	
 
-	arg := CreateEntryParams {
-		AccountID: 	account.ID,
-		Amount: 	util.RandomMoney(),
+	arg := CreateEntryParams{
+		AccountID: account.ID,
+		Amount:    util.RandomMoney(),
 	}
 
-	// create entry 
+	// create entry
 	entry, err := testQueries.CreateEntry(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, entry)
@@ -28,7 +27,6 @@ func createRandomEntry(t *testing.T, account Account) Entry {
 
 	require.NotZero(t, entry.ID)
 	require.NotZero(t, entry.CreatedAt)
-
 
 	return entry
 }
@@ -59,10 +57,10 @@ func TestListEntries(t *testing.T) {
 		createRandomEntry(t, account)
 	}
 
-	arg := ListEntriesParams {
-		AccountID:		account.ID,
-		Limit:			5,
-		Offset: 		5,
+	arg := ListEntriesParams{
+		AccountID: account.ID,
+		Limit:     5,
+		Offset:    5,
 	}
 
 	entries, err := testQueries.ListEntries(context.Background(), arg)
