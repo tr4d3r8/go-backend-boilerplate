@@ -46,6 +46,10 @@ function tests {
     echo "running unit tests"
     go test -v -cover ./...
 }
+function start {
+    echo "starting server"
+    go run main.go
+}
 
 function default {
     start
