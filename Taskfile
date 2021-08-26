@@ -51,6 +51,11 @@ function start {
     go run main.go
 }
 
+function mock {
+    echo "generating mock"
+    mockgen -package mockdb -destination db/mock/store.go github.com/tr4d3r8/go-backend-boilerplate/db/sqlc Store
+}
+
 function default {
     start
 }
@@ -63,3 +68,4 @@ function help {
 
 TIMEFORMAT="Task completed in %3lR"
 time ${@:-default}
+
