@@ -2,24 +2,26 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"gitlab.com/tr4d3r/backend-master-golang/util"
 )
 
 //for test isolation we will create a new random transaction for each test
-func createRandomTransfer(t *testing.T) Transfer {
-	account1 := createRandomAccount(t)
-	account2 := createRandomAccount(t)
+func createRandomTransfer(t *testing.T, account1, account2 Account) Transfer {
+	
+	
+	// account1 := createRandomAccount(t)
+	// account2 := createRandomAccount(t)
 
-	debit := account1.Balance - 1
+	//debit := account1.Balance
 
 	arg := CreateTransferParams {
 		FromAccountID: account1.ID,
 		ToAccountID: account2.ID,
-		Amount: debit,
+		Amount: util.RandomMoney(),
 	}
 
 	transfer, err := testQueries.CreateTransfer(context.Background(), arg)
@@ -38,11 +40,17 @@ func createRandomTransfer(t *testing.T) Transfer {
 }
 
 func TestCreateTransfer(t *testing.T) {
-	createRandomTransfer(t)
+	account1 := createRandomAccount(t)
+	account2 := createRandomAccount(t)
+	createRandomTransfer(t, account1, account2)
 }
 
 func TestGetTransfer(t *testing.T) {
-	transfer1 := createRandomTransfer(t)
+	account1 := createRandomAccount(t)
+	account2 := createRandomAccount(t)
+
+	transfer1 := createRandomTransfer(t, account1, account2)
+
 	transfer2, err := testQueries.GetTransfer(context.Background(), transfer1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, transfer2)
@@ -54,26 +62,21 @@ func TestGetTransfer(t *testing.T) {
 	require.WithinDuration(t, transfer1.CreatedAt, transfer2.CreatedAt, time.Second)
 }
 
-func TestDeleteTransfer(t *testing.T) {
-	Transfer1 := createRandomTransfer(t)
-	err := testQueries.DeleteTransfer(context.Background(), Transfer1.ID)
-	require.NoError(t, err)
-
-	//verify the transfer is deleted
-	transfer2, err := testQueries.GetTransfer(context.Background(), Transfer1.ID)
-	require.Error(t, err)
-	require.EqualError(t, err, sql.ErrNoRows.Error())
-	require.Empty(t, transfer2)
-}
-
 func TestListTransfers(t *testing.T) {
-	// make sure we have at least 10 records
-	for i := 0; i < 10; i++ {
-		createRandomTransfer(t)
+	account1 := createRandomAccount(t)
+	account2 := createRandomAccount(t)
+
+
+	// make sure we have at least 5 records
+	for i := 0; i < 5; i++ {
+		createRandomTransfer(t, account1, account2)
+		createRandomTransfer(t, account1, account2)
 	}
 
 	// make sure we return exactly 5 records 
 	arg := ListTransfersParams {
+		FromAccountID:	account1.ID,
+		ToAccountID:	account2.ID,
 		Limit: 5,
 		Offset: 5,
 	}
@@ -85,5 +88,6 @@ func TestListTransfers(t *testing.T) {
 	// verify they are not empty 
 	for _, transfer := range transfers {
 		require.NotEmpty(t, transfer)
+		require.True(t, transfer.FromAccountID == account1.ID || transfer.ToAccountID == account1.ID)
 	}
 }
